@@ -15,7 +15,36 @@ if(navigator.geolocation)
 navigator.geolocation.getCurrentPosition(function(position){
     const {longitude} = position.coords;
     const {latitude} = position.coords;
-},
+    const corrds = [latitude,longitude];
+    const map = L.map('map').setView(corrds, 13);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    L.marker(corrds).addTo(map)
+    .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+    .openPopup();
+    
+    map.on('click',function(event){
+        const {lat,lng} = event.latlng;
+        L.marker([lat,lng]).addTo(map)
+        .bindPopup(
+            L.popup({
+                minWidth : 100,
+                maxWidth : 250,
+                autoClose : false,
+                closeOnClick : false,
+                className : 'running-popup'
+            })
+        ).setPopupContent('Running')
+        .openPopup();
+
+    });
+
+
+
+    },  
 function(){
     alert('Could not get the location!');
 });
